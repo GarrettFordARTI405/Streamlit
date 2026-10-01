@@ -2,7 +2,7 @@ import streamlit as st
 st.title("My Machine Learning Classifier App")
 
 st.write("""
-## Explore different classifier
+## Explore different classifiers
 """)
 
 dataset_name = st.sidebar.selectbox(
