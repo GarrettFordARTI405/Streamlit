@@ -36,15 +36,21 @@ def add_parameter_ui(clf_name):
     params = dict()
     if clf_name == "KNN":
         K = st.sidebar.slider("K", 1, 15)
+        leaf_size = st.sidebar.slider("leaf_size", 1, 100, 30)
         params["K"] = K
+        params["leaf_size"] = leaf_size
     elif clf_name == "SVM":
         C = st.sidebar.slider("C", 0.01, 10.0)
+        degree = st.sidebar.slider("degree", 1, 10, 3)
         params["C"] = C
+        params["degree"] = degree
     else:
         max_depth = st.sidebar.slider("max_depth", 2, 15)
         n_estimators = st.sidebar.slider("n_estimators", 1, 100)
+        min_samples_split = st.sidebar.slider("min_samples_split", 2, 20, 2)
         params["max_depth"] = max_depth
         params["n_estimators"] = n_estimators
+        params["min_samples_split"] = min_samples_split
     return params
 params = add_parameter_ui(classifier_name)
 
@@ -56,12 +62,12 @@ def get_classifier(clf_name, params):
     from sklearn.ensemble import RandomForestClassifier
 
     if clf_name == "KNN":
-        clf = KNeighborsClassifier(n_neighbors=params["K"])
+        clf = KNeighborsClassifier(n_neighbors=params["K"], leaf_size=params["leaf_size"])
     elif clf_name == "SVM":
-        clf = SVC(C=params["C"])
+        clf = SVC(C=params["C"], degree=params["degree"], kernel='poly')
     else:
         clf = RandomForestClassifier(n_estimators=params["n_estimators"],
-                                     max_depth=params["max_depth"], random_state=1234)
+                                     max_depth=params["max_depth"], min_samples_split=params["min_samples_split"], random_state=1234)
     return clf
 clf = get_classifier(classifier_name, params)
 
@@ -86,8 +92,8 @@ st.write("Confusion Matrix:", cm)
 from sklearn.decomposition import PCA
 pca = PCA(n_components=2)
 X_pca = pca.fit_transform(X)
-x1 = X_projected[:, 0]
-x2 = X_projected[:, 1]
+x1 = X_pca[:, 0]
+x2 = X_pca[:, 1]
 
 st.write("PCA Plot:")
 import matplotlib.pyplot as plt
